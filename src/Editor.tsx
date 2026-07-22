@@ -6,6 +6,7 @@ import {
   Settings, Type, MousePointer, X, Download, Upload, Smartphone
 } from 'lucide-react';
 import { usePWAInstall } from './usePWAInstall';
+import { InstallModal } from './InstallModal';
 
 export default function Editor() {
   const { 
@@ -15,7 +16,7 @@ export default function Editor() {
     setAppName, setAppIcon, importState
   } = useStore();
 
-  const { isStandalone, promptInstall } = usePWAInstall();
+  const { isStandalone, deferredPrompt, isModalOpen, openInstallGuide, closeModal } = usePWAInstall();
 
   const [activePageId, setActivePageId] = useState<ID | null>(state.pages[0]?.id || null);
   const [selectedElementId, setSelectedElementId] = useState<ID | null>(null);
@@ -375,7 +376,7 @@ export default function Editor() {
 
             {!isStandalone && (
               <button
-                onClick={promptInstall}
+                onClick={openInstallGuide}
                 className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded text-xs flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-900/30"
               >
                 <Smartphone size={15} /> 📲 安装应用到安卓手机
@@ -586,6 +587,12 @@ export default function Editor() {
       <div className="hidden md:flex w-64 shrink-0 bg-slate-950 border-l border-slate-800 flex-col overflow-y-auto">
         {renderProperties()}
       </div>
+
+      <InstallModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        deferredPrompt={deferredPrompt}
+      />
 
     </div>
   );

@@ -3,10 +3,11 @@ import { useStore } from './store';
 import { useLongPress } from 'react-use';
 import { Settings, Smartphone } from 'lucide-react';
 import { usePWAInstall } from './usePWAInstall';
+import { InstallModal } from './InstallModal';
 
 export default function Player() {
   const { state, setMode } = useStore();
-  const { isStandalone, promptInstall } = usePWAInstall();
+  const { isStandalone, deferredPrompt, isModalOpen, openInstallGuide, closeModal } = usePWAInstall();
   const [currentPageId, setCurrentPageId] = useState<string | null>(state.startPageId);
   const [showExitHint, setShowExitHint] = useState(true);
 
@@ -119,7 +120,7 @@ export default function Player() {
       >
         {!isStandalone && (
           <button
-            onClick={(e) => { e.stopPropagation(); promptInstall(); }}
+            onClick={(e) => { e.stopPropagation(); openInstallGuide(); }}
             className="bg-emerald-600/90 backdrop-blur text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg hover:bg-emerald-500 transition-colors"
             title="Install App to Android Home Screen"
           >
@@ -138,6 +139,12 @@ export default function Player() {
           <Settings size={16} />
         </button>
       </div>
+
+      <InstallModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        deferredPrompt={deferredPrompt}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "MockApp Player",
   "short_name": "MockApp",
   "start_url": "/?play=1",
