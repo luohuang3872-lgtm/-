@@ -41,8 +41,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const loadState = async () => {
       try {
         const savedState = await get('mockapp-state');
+        const urlParams = new URLSearchParams(window.location.search);
+        const forcePlay = urlParams.get('play') === '1';
+        
         if (savedState) {
-          setState({ ...DEFAULT_STATE, ...savedState, mode: 'edit' }); // Always start in edit mode
+          setState({ ...DEFAULT_STATE, ...savedState, mode: forcePlay ? 'play' : 'edit' });
+        } else if (forcePlay) {
+          setState(s => ({ ...s, mode: 'play' }));
         }
       } catch (err) {
         console.error('Failed to load state from idb:', err);
