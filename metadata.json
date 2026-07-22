@@ -1,0 +1,6 @@
+{
+  "name": "MockApp Prototyper",
+  "description": "Create interactive mobile app prototypes using screenshots with clickable hotspots and custom text replacements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
