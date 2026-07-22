@@ -329,7 +329,7 @@ export default function Editor() {
     <div className="flex h-screen bg-slate-900 text-slate-200 overflow-hidden font-sans">
       
       {/* LEFT SIDEBAR - Pages */}
-      <div className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col">
+      <div className="w-full md:w-64 bg-slate-950 border-r border-slate-800 flex flex-col shrink-0 z-50">
         <div className="p-4 border-b border-slate-800">
           <h1 className="font-bold text-white mb-4 flex items-center gap-2">
             <Settings size={18} /> Prototyper
@@ -390,6 +390,10 @@ export default function Editor() {
           </div>
         </div>
 
+        <div className="md:hidden px-4 py-3 bg-blue-900/30 text-blue-300 text-xs border-b border-blue-900/50">
+          <strong>Mobile Info:</strong> The editor canvas is hidden on mobile devices. Please click <strong>Import</strong> to load your project, then click <strong>Play Prototype</strong>.
+        </div>
+
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
           <div className="flex items-center justify-between mb-2 px-1">
             <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pages</h2>
@@ -446,7 +450,7 @@ export default function Editor() {
       </div>
 
       {/* CENTER - Canvas */}
-      <div className="flex-1 flex flex-col bg-slate-900 relative">
+      <div className="hidden md:flex flex-1 flex-col bg-slate-900 relative">
         {/* Toolbar */}
         <div className="h-14 border-b border-slate-800 flex items-center justify-center gap-2 px-4 shrink-0 bg-slate-900/80 backdrop-blur z-10">
           <button 
@@ -567,7 +571,7 @@ export default function Editor() {
       </div>
 
       {/* RIGHT SIDEBAR - Properties */}
-      <div className="w-64 bg-slate-950 border-l border-slate-800 flex flex-col overflow-y-auto">
+      <div className="hidden md:flex w-64 shrink-0 bg-slate-950 border-l border-slate-800 flex-col overflow-y-auto">
         {renderProperties()}
       </div>
 
