@@ -31,16 +31,20 @@ function AppContent() {
         appleIcon.href = state.appIcon;
       }
 
+      const defaultIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23333'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='50' fill='white'%3EApp%3C/text%3E%3C/svg%3E";
+      const iconToUse = state.appIcon || defaultIcon;
+      
       const manifest = {
         name: state.appName || 'MockApp',
         short_name: state.appName || 'MockApp',
+        start_url: window.location.pathname + window.location.search,
         display: 'standalone',
         background_color: '#000000',
         theme_color: '#000000',
-        icons: state.appIcon ? [
-          { src: state.appIcon, sizes: '192x192', type: 'image/png' },
-          { src: state.appIcon, sizes: '512x512', type: 'image/png' }
-        ] : []
+        icons: [
+          { src: iconToUse, sizes: '192x192', type: iconToUse.startsWith('data:image/svg') ? 'image/svg+xml' : 'image/png' },
+          { src: iconToUse, sizes: '512x512', type: iconToUse.startsWith('data:image/svg') ? 'image/svg+xml' : 'image/png' }
+        ]
       };
 
       const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
