@@ -1,12 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#000000" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" href="/icon.png" type="image/png" />
+    <link rel="icon" href="/icon.png" type="image/png" sizes="192x192" />
     <link rel="apple-touch-icon" href="/icon.png" />
     <title>MockApp Prototyper</title>
   </head>
@@ -16,12 +18,13 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.log('SW registration failed: ', err);
+          navigator.serviceWorker.register('/sw.js').then(reg => {
+            console.log('ServiceWorker registered with scope:', reg.scope);
+          }).catch(err => {
+            console.log('SW registration failed:', err);
           });
         });
       }
     </script>
   </body>
 </html>
-

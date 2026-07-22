@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from './store';
 import { useLongPress } from 'react-use';
-import { Settings } from 'lucide-react';
+import { Settings, Smartphone } from 'lucide-react';
+import { usePWAInstall } from './usePWAInstall';
 
 export default function Player() {
   const { state, setMode } = useStore();
+  const { isStandalone, promptInstall } = usePWAInstall();
   const [currentPageId, setCurrentPageId] = useState<string | null>(state.startPageId);
   const [showExitHint, setShowExitHint] = useState(true);
 
@@ -115,6 +117,16 @@ export default function Player() {
           showExitHint ? 'opacity-100' : 'opacity-0 hover:opacity-100'
         }`}
       >
+        {!isStandalone && (
+          <button
+            onClick={(e) => { e.stopPropagation(); promptInstall(); }}
+            className="bg-emerald-600/90 backdrop-blur text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg hover:bg-emerald-500 transition-colors"
+            title="Install App to Android Home Screen"
+          >
+            <Smartphone size={14} />
+            <span>安装应用</span>
+          </button>
+        )}
         <div className="bg-black/60 backdrop-blur text-white text-xs px-3 py-1.5 rounded-full pointer-events-none">
           Long press anywhere to exit
         </div>

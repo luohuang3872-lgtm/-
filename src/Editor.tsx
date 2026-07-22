@@ -3,8 +3,9 @@ import { useStore } from './store';
 import { Page, Hotspot, TextOverlay, ID } from './types';
 import { 
   Play, Plus, Image as ImageIcon, Trash2, Edit3, 
-  Settings, Type, MousePointer, X, Download, Upload 
+  Settings, Type, MousePointer, X, Download, Upload, Smartphone
 } from 'lucide-react';
+import { usePWAInstall } from './usePWAInstall';
 
 export default function Editor() {
   const { 
@@ -13,6 +14,8 @@ export default function Editor() {
     addTextOverlay, removeTextOverlay, updateTextOverlay,
     setAppName, setAppIcon, importState
   } = useStore();
+
+  const { isStandalone, promptInstall } = usePWAInstall();
 
   const [activePageId, setActivePageId] = useState<ID | null>(state.pages[0]?.id || null);
   const [selectedElementId, setSelectedElementId] = useState<ID | null>(null);
@@ -369,6 +372,15 @@ export default function Editor() {
               </div>
               <input type="file" ref={iconInputRef} onChange={handleIconUpload} accept="image/*" className="hidden" />
             </div>
+
+            {!isStandalone && (
+              <button
+                onClick={promptInstall}
+                className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded text-xs flex items-center justify-center gap-2 transition-colors shadow-lg shadow-emerald-900/30"
+              >
+                <Smartphone size={15} /> 📲 安装应用到安卓手机
+              </button>
+            )}
             
             <div className="flex gap-2 pt-2 border-t border-slate-800/50 mt-3">
               <button 

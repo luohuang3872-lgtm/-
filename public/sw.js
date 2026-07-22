@@ -1,12 +1,34 @@
+const CACHE_NAME = 'mockapp-v1';
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon.png',
+  '/icon-512.png'
+];
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(STATIC_ASSETS).catch(() => {});
+    })
+  );
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    self.clients.claim().then(() => {
+      return caches.keys().then((keys) => {
+        return Promise.all(
+          keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+        );
+      });
+    })
+  );
 });
 
-// Zero-dependency IndexedDB reader for 'keyval-store' -> 'keyval' store (used by idb-keyval)
+// Zero-dependency IndexedDB reader for 'keyval-store' -> 'keyval'
 function getFromIDB(key) {
   return new Promise((resolve) => {
     try {
@@ -37,15 +59,19 @@ async function handleManifest() {
     const shortName = state?.appName?.trim() ? state.appName : 'MockApp';
 
     let icons = [
-      { src: '/icon.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-      { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+      { src: '/icon.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/icon.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
     ];
 
     if (state?.appIcon && typeof state.appIcon === 'string' && state.appIcon.startsWith('data:image/')) {
       const mime = state.appIcon.split(';')[0].split(':')[1] || 'image/png';
       icons = [
-        { src: '/custom-icon?s=192', sizes: '192x192', type: mime, purpose: 'any maskable' },
-        { src: '/custom-icon?s=512', sizes: '512x512', type: mime, purpose: 'any maskable' }
+        { src: '/custom-icon?s=192', sizes: '192x192', type: mime, purpose: 'any' },
+        { src: '/custom-icon?s=192', sizes: '192x192', type: mime, purpose: 'maskable' },
+        { src: '/custom-icon?s=512', sizes: '512x512', type: mime, purpose: 'any' },
+        { src: '/custom-icon?s=512', sizes: '512x512', type: mime, purpose: 'maskable' }
       ];
     }
 
@@ -69,25 +95,7 @@ async function handleManifest() {
       }
     });
   } catch (err) {
-    const fallbackManifest = {
-      name: 'MockApp Player',
-      short_name: 'MockApp',
-      start_url: '/?play=1',
-      scope: '/',
-      display: 'standalone',
-      background_color: '#000000',
-      theme_color: '#000000',
-      icons: [
-        { src: '/icon.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-        { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
-      ]
-    };
-    return new Response(JSON.stringify(fallbackManifest), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/manifest+json; charset=utf-8'
-      }
-    });
+    return fetch('/manifest.json');
   }
 }
 
