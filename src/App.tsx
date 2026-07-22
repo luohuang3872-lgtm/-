@@ -30,32 +30,6 @@ function AppContent() {
       if (state.appIcon) {
         appleIcon.href = state.appIcon;
       }
-      const iconToUse = state.appIcon || '/icon.png';
-      const iconType = iconToUse.startsWith('data:image/jpeg') ? 'image/jpeg' : 
-                       iconToUse.startsWith('data:image/svg') ? 'image/svg+xml' : 'image/png';
-
-      const manifest = {
-        name: state.appName || 'MockApp Player',
-        short_name: state.appName || 'MockApp',
-        start_url: "/?play=1",
-        display: 'standalone',
-        background_color: '#000000',
-        theme_color: '#000000',
-        icons: [
-          { src: iconToUse, sizes: '192x192 512x512', type: iconType, purpose: 'any maskable' }
-        ]
-      };
-
-      const manifestStr = JSON.stringify(manifest);
-      const manifestURL = `data:application/manifest+json;charset=utf-8,${encodeURIComponent(manifestStr)}`;
-      
-      let manifestLink = document.querySelector("link[rel='manifest']") as HTMLLinkElement;
-      if (!manifestLink) {
-        manifestLink = document.createElement('link');
-        manifestLink.rel = 'manifest';
-        document.head.appendChild(manifestLink);
-      }
-      manifestLink.href = manifestURL;
     }
   }, [state.appName, state.appIcon]);
 
